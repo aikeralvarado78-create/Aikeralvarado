@@ -2074,7 +2074,7 @@
       }
 
       function iniciarSincronizacionBackend() {
-        /+if (syncPollingTimer) clearInterval(syncPollingTimer);
+        if (syncPollingTimer) clearInterval(syncPollingTimer);
         syncPollingTimer = setInterval(async () => {
           if (!syncWebSocket || syncWebSocket.readyState !== WebSocket.OPEN) {
             await cargarDatosDesdeServidor();
@@ -2082,7 +2082,7 @@
           }
         }, SYNC_POLL_INTERVAL_MS);
         initWebSocketRealtime();
-      }*/
+      }
 
       function initWebSocketRealtime() {
         if (typeof WebSocket === "undefined") return;
