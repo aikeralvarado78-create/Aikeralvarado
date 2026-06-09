@@ -1978,7 +1978,10 @@
         if (!payload || typeof payload !== "object") return;
         if (payload.sender === obtenerIdClienteSync()) return;
         if (payload.type === "datos_base" && Array.isArray(payload.data)) {
-          const mergedData = fusionarBasesDeDatos(payload.data, baseDatosInterna || []);
+          const mergedData = fusionarBasesDeDatos(
+            payload.data,
+            baseDatosInterna || [],
+          );
           if (!areArrayValuesEqual(mergedData, baseDatosInterna)) {
             baseDatosInterna = mergedData;
             localStorage.setItem(
@@ -1998,7 +2001,8 @@
           );
           if (!areArrayValuesEqual(mergedChats, previousChats)) {
             if (document.getElementById("chatRailPanel")) renderChatRail();
-            if (document.getElementById("chatFloatingWindows")) renderChatWindows();
+            if (document.getElementById("chatFloatingWindows"))
+              renderChatWindows();
           }
         }
       }
@@ -2023,7 +2027,8 @@
             const nuevoValor = event.newValue ? JSON.parse(event.newValue) : [];
             chatsLocales = Array.isArray(nuevoValor) ? nuevoValor : [];
             if (document.getElementById("chatRailPanel")) renderChatRail();
-            if (document.getElementById("chatFloatingWindows")) renderChatWindows();
+            if (document.getElementById("chatFloatingWindows"))
+              renderChatWindows();
           } catch (err) {
             console.warn("Error al leer chats de sincronización local:", err);
           }
@@ -2062,9 +2067,14 @@
             if (!previo) {
               porId.set(String(chat.id), chat);
             } else {
-              const fechaPrev = new Date(previo.fecha || previo.created_at || 0);
+              const fechaPrev = new Date(
+                previo.fecha || previo.created_at || 0,
+              );
               const fechaNuevo = new Date(chat.fecha || chat.created_at || 0);
-              if (!Number.isNaN(fechaNuevo.getTime()) && fechaNuevo > fechaPrev) {
+              if (
+                !Number.isNaN(fechaNuevo.getTime()) &&
+                fechaNuevo > fechaPrev
+              ) {
                 porId.set(String(chat.id), chat);
               }
             }
@@ -2074,14 +2084,14 @@
       }
 
       function iniciarSincronizacionBackend() {
-        if (syncPollingTimer) clearInterval(syncPollingTimer);
+        /*if (syncPollingTimer) clearInterval(syncPollingTimer);
         syncPollingTimer = setInterval(async () => {
           if (!syncWebSocket || syncWebSocket.readyState !== WebSocket.OPEN) {
             await cargarDatosDesdeServidor();
             await cargarChatsDesdeServidor();
           }
         }, SYNC_POLL_INTERVAL_MS);
-        initWebSocketRealtime();
+        initWebSocketRealtime();*/
       }
 
       function initWebSocketRealtime() {
@@ -2532,9 +2542,12 @@
           localStorage.setItem("activopay_local_espejo", JSON.stringify(data));
           publicarEventoSync({ type: "datos_base", data });
           if (syncToServer) {
-            console.debug("guardarEspejoLocal: sincronizando datos al servidor", {
-              length: Array.isArray(data) ? data.length : undefined,
-            });
+            console.debug(
+              "guardarEspejoLocal: sincronizando datos al servidor",
+              {
+                length: Array.isArray(data) ? data.length : undefined,
+              },
+            );
             sincronizarDatosAlServidor(data);
           }
         } catch (e) {
@@ -2646,8 +2659,13 @@
           });
           if (response.ok) {
             const datosServidor = await response.json();
-            const servidorArray = Array.isArray(datosServidor) ? datosServidor : [];
-            const mergedData = fusionarBasesDeDatos(servidorArray, baseDatosInterna || []);
+            const servidorArray = Array.isArray(datosServidor)
+              ? datosServidor
+              : [];
+            const mergedData = fusionarBasesDeDatos(
+              servidorArray,
+              baseDatosInterna || [],
+            );
             if (!areArrayValuesEqual(mergedData, baseDatosInterna)) {
               baseDatosInterna = mergedData;
               guardarEspejoLocal(baseDatosInterna, false);
@@ -2850,7 +2868,8 @@
               response.statusText,
             );
             const bodyText = await response.text().catch(() => null);
-            if (bodyText) console.debug("Respuesta del backend (chats):", bodyText);
+            if (bodyText)
+              console.debug("Respuesta del backend (chats):", bodyText);
           } else {
             console.debug("sincronizarChatsAlServidor: éxito", {
               count: Array.isArray(payload) ? payload.length : undefined,
@@ -2868,7 +2887,9 @@
           });
           if (response.ok) {
             const datosServidor = await response.json();
-            const servidorChats = Array.isArray(datosServidor) ? datosServidor : [];
+            const servidorChats = Array.isArray(datosServidor)
+              ? datosServidor
+              : [];
             const previousChats = chatsLocales || [];
             const mergedChats = fusionarChats(servidorChats, previousChats);
             chatsLocales = mergedChats;
@@ -2879,7 +2900,8 @@
             if (!areArrayValuesEqual(mergedChats, previousChats)) {
               publicarEventoSync({ type: "chats", data: chatsLocales });
               if (document.getElementById("chatRailPanel")) renderChatRail();
-              if (document.getElementById("chatFloatingWindows")) renderChatWindows();
+              if (document.getElementById("chatFloatingWindows"))
+                renderChatWindows();
             }
           } else {
             const savedChats = localStorage.getItem("activopay_chats_locales");
@@ -2891,7 +2913,8 @@
               }
             }
             if (document.getElementById("chatRailPanel")) renderChatRail();
-            if (document.getElementById("chatFloatingWindows")) renderChatWindows();
+            if (document.getElementById("chatFloatingWindows"))
+              renderChatWindows();
           }
         } catch (err) {
           console.warn("No se pudieron cargar chats desde el servidor:", err);
@@ -2904,7 +2927,8 @@
             }
           }
           if (document.getElementById("chatRailPanel")) renderChatRail();
-          if (document.getElementById("chatFloatingWindows")) renderChatWindows();
+          if (document.getElementById("chatFloatingWindows"))
+            renderChatWindows();
         }
       }
 
@@ -5457,7 +5481,7 @@
                             <h3 class="text-base font-bold text-white flex items-center gap-1.5 font-sans"><i data-lucide="database" class="text-slate-400"></i> Repositorio General</h3>
                             <p class="text-[11px] text-slate-400 font-semibold mt-1">Soporte técnico, auditoría y corrección dinámica en caliente de datos.</p>
                         </div>
-                        
+
                         <!-- Controles de Modo de Visualización y Acciones -->
                         <div class="flex flex-wrap gap-3 items-center bg-[#0b0f19] font-sans">
                             ${
@@ -5480,7 +5504,7 @@
                             }
 
                             <input type="text" id="repoSearch" oninput="filtrarTablaListaMuerta()" value="${filtroEstatusGlobal}" placeholder="Búsqueda predictiva..." class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 font-mono">
-                            
+
                             ${
                               canImportExcel
                                 ? `
@@ -5736,9 +5760,6 @@
         overlay.classList.add("hidden");
         overlay.classList.remove("flex");
       }
-      
-
-      
 
       function actualizarSeccionesUsuariosAdmin() {
         const secCount = Number(
@@ -6049,7 +6070,7 @@
                             </div>
                         </td>
                         <td class="p-1"><div class="px-1.5 py-1 border border-transparent font-mono text-slate-400 whitespace-nowrap">${formatearFecha(sol.fecha_recibido)}</div></td>
-                        
+
                         <td class="p-1"><div class="px-1.5 py-1 border border-transparent font-mono text-slate-400 whitespace-nowrap">${formatearFecha(sol.fecha_afiliado)}</div></td>
                         <td class="p-1"><div class="px-1.5 py-1 border border-transparent font-mono text-slate-400 whitespace-nowrap">${formatearFecha(sol.fecha_produccion)}</div></td>
                         <td class="p-1"><div class="px-1.5 py-1 border border-transparent font-mono text-slate-400 whitespace-nowrap">${formatearFecha(sol.fecha_desafiliación)}</div></td>
@@ -6185,7 +6206,7 @@
                 <div class="bg-[#0b0f19] border border-slate-800/80 rounded-2xl p-6 shadow-xl font-sans w-full max-w-full">
                     <h3 class="text-base font-bold text-white mb-3 font-sans">Reclasificación de Casos "Otro"</h3>
                     <p class="text-xs text-slate-400 mb-4 font-sans">Mapee de manera manual los casos heredados que de origen no poseían una etiqueta definida.</p>
-                    
+
                     <div class="space-y-3 font-sans">
                         ${
                           casosPorClasificar.length === 0
@@ -7384,7 +7405,8 @@
         if (index !== -1) {
           baseDatosInterna[index].estatus = "5. En Producción";
           baseDatosInterna[index].fecha_produccion =
-            baseDatosInterna[index].fecha_produccion || new Date().toISOString();
+            baseDatosInterna[index].fecha_produccion ||
+            new Date().toISOString();
           guardarEspejoLocal(baseDatosInterna);
           spawnToast(
             "Pase a Producción",
@@ -7500,7 +7522,7 @@
                                 <i data-lucide="file-spreadsheet" class="text-emerald-500 w-4.5 h-4.5"></i> Ingesta Masiva .xlsx
                             </h3>
                             <p class="text-[11px] text-slate-400 mb-4 leading-relaxed font-sans">Arrastre el archivo manual tradicional consolidado con el mapeo histórico para normalizar, limpiar y corregir duplicados en el acto.</p>
-                            
+
                             <!-- Area de Carga Drag & Drop -->
                             <div ondragover="event.preventDefault()" ondrop="event.preventDefault(); importarExcelDesdeRepositorio({target: {files: event.dataTransfer.files}})" class="border-2 border-dashed border-slate-800 hover:border-emerald-500/50 bg-slate-900/30 p-12 rounded-xl text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-3 relative overflow-hidden">
                                 <i data-lucide="upload-cloud" class="w-10 h-10 text-slate-500"></i>
